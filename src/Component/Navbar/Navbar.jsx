@@ -12,8 +12,10 @@ const NavBar = () => {
   return (
     <div className='navbar'>
         <div className='nav-logo'>
+            <a href="/SHOPPER">
             <img src={logo} alt="" />
             <p>Shopper</p>
+            </a>
         </div>
 
         {/* Mobile menu button */}
