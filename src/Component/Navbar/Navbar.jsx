@@ -13,7 +13,7 @@ const NavBar = () => {
     <div className='navbar'>
         <div className='nav-logo'>
             <Link to="/" className="nav-logo-link" onClick={() => setMenu('shop')}>
-                <img src={logo} alt="Shopper logo" />
+                <img src={logo} alt="Shopper logo" loading="eager" />
                 <p>Shopper</p>
             </Link>
         </div>
@@ -33,7 +33,7 @@ const NavBar = () => {
         </ul>
         <div className='nav-login-cart'>
             <button><Link to="/login">Login</Link></button>
-            <Link to="/cart"><img src={cart_icon} alt="" /></Link>
+            <Link to="/cart"><img src={cart_icon} alt="" loading="lazy" /></Link>
             <div className="nav-cart-count">0</div>
         </div>
     </div>

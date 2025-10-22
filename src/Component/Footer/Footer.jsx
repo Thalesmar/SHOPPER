@@ -9,7 +9,7 @@ const Footer = () => {
   return (
     <div className='footer'>
         <div className="footer-logo">
-            <img src={footer_logo} alt="" />
+            <img src={footer_logo} alt="" loading="lazy" />
             <p>Shopper</p>
         </div>
         <div className='footer-links'>
@@ -32,13 +32,13 @@ const Footer = () => {
         </div>
         <div className="footer-social-icons" aria-label="social links">
             <div className="footer-icons-container">
-                <img src={instagram_icon} alt="Instagram" />
+                <img src={instagram_icon} alt="Instagram" loading="lazy" />
             </div>
             <div className="footer-icons-container">
-                <img src={pintester_icon} alt="Pinterest" />
+                <img src={pintester_icon} alt="Pinterest" loading="lazy" />
             </div>
             <div className="footer-icons-container">
-                <img src={whatsapp_icon} alt="WhatsApp" />
+                <img src={whatsapp_icon} alt="WhatsApp" loading="lazy" />
             </div>
         </div>
         <div className='footer-copyright'>

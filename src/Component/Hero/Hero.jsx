@@ -13,18 +13,18 @@ export const Hero = () => {
                 <div>
                     <div className="hero-hand-icon">
                         <p>new</p>
-                        <img src={hand_icon} alt="" />
+                        <img src={hand_icon} alt="" loading="lazy" />
                     </div>
                     <p>collections</p>
                     <p>for everyone</p>
                 </div>
                 <div className="hero-latest-btn">
                     <div>Latest Collection</div>
-                    <img src={arrow_icon} alt="" />
+                    <img src={arrow_icon} alt="" loading="lazy" />
                 </div>
             </div>
             <div className='hero-right'>
-                <img src={hero_image} alt="" />
+                <img src={hero_image} alt="" loading="eager" />
             </div>
         </div>
     </div>
