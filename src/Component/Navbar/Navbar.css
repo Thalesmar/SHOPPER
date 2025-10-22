@@ -229,9 +229,6 @@
 }
 
 @media (max-width: 480px) {
-    .navbar {
-        padding: 12px 15px;
-    }
 
     .nav-logo p {
         font-size: 1.5rem;
