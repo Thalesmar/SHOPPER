@@ -12,6 +12,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    cursor: pointer;
 }
 
 /* Make the anchor inside nav-logo a flex row so img and text sit inline */

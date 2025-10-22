@@ -12,7 +12,7 @@ const NavBar = () => {
   return (
     <div className='navbar'>
         <div className='nav-logo'>
-            <Link to="/" className="nav-logo-link">
+            <Link to="/Shop" className="nav-logo-link">
                 <img src={logo} alt="Shopper logo" />
                 <p>Shopper</p>
             </Link>
