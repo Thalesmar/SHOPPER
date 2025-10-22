@@ -6,6 +6,7 @@ import { ShopCategory } from './pages/ShopCategory';
 import { Product } from './pages/Product';
 import { Cart } from './pages/Cart';
 import { LoginSignup } from './pages/LoginSignup';
+import { Orders } from './pages/Orders';
 import Footer from './Component/Footer/Footer';
 import men_banner from './Component/Assets/banner_mens.png' ;
 import women_banner from './Component/Assets/banner_women.png' ;
@@ -24,6 +25,7 @@ const App = () => {
             <Route path='/product/:productId' element={<Product/>}/>
             <Route path='/cart' element={<Cart/>}/>
             <Route path='/login' element={<LoginSignup/>}/>
+            <Route path='/orders' element={<Orders/>}/>
         </Routes>
         <Footer />
     </div>

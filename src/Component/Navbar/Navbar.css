@@ -176,6 +176,87 @@
     color: white;
 }
 
+/* User menu styles */
+.user-menu-container {
+    position: relative;
+}
+
+.user-menu-btn {
+    background: none;
+    border: none;
+    color: #171717;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.user-menu-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 16px;
+    min-width: 200px;
+    z-index: 1000;
+}
+
+.user-info {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.user-info p {
+    margin: 4px 0;
+    font-size: 14px;
+}
+
+.logout-btn {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+    background: #cc3333;
+}
+
+.mobile-user-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+}
+
+.mobile-logout-btn {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.mobile-logout-btn:hover {
+    background: #cc3333;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .nav-menu {
