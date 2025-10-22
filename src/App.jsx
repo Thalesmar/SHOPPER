@@ -1,18 +1,18 @@
 import React from 'react'
 import Navbar from './Component/Navbar/Navbar';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Shop from './pages/Shop';
 import { ShopCategory } from './pages/ShopCategory';
 import { Product } from './pages/Product';
 import { Cart } from './pages/Cart';
 import { LoginSignup } from './pages/LoginSignup';
+import Footer from './Component/Footer/Footer';
 
 const App = () => {
   return (
-    <div>
-        <BrowserRouter>
-        <Navbar/>
-        <Routes>
+  <div>
+    <Navbar/>
+    <Routes>
             <Route path='/' element={<Shop/>}/>
             <Route path='/men' element={<ShopCategory category="men"/>}/>
             <Route path='/women' element={<ShopCategory category="women"/>}/>
@@ -23,7 +23,7 @@ const App = () => {
             <Route path='/cart' element={<Cart/>}/>
             <Route path='/login' element={<LoginSignup/>}/>
         </Routes>
-        </BrowserRouter>
+        <Footer />
     </div>
   )
 }
