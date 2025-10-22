@@ -193,9 +193,14 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 933px) {
+    /* Place burger next to cart on small screens */
+    .navbar { justify-content: flex-start; }
+
     .mobile-menu-btn {
         display: flex;
+        order: 3;            /* after cart */
+        margin-left: 20px;   /* small gap from cart */
     }
 
     /* Show mobile login item inside menu */
@@ -232,6 +237,8 @@
 
     .nav-login-cart {
         gap: 20px;
+        order: 2;           /* appears before burger */
+        margin-left: auto;  /* push to right edge */
     }
 
     .nav-login-cart button {
@@ -243,6 +250,8 @@
     .nav-logo p {
         font-size: 2rem;
     }
+    /* Keep logo on the left */
+    .nav-logo { order: 1; }
 }
 
 @media (max-width: 480px) {
@@ -254,6 +263,7 @@
 
     .nav-login-cart {
         gap: 15px;
+        margin-left: auto; /* ensure right aligned */
     }
 
     .nav-login-cart button {
@@ -268,5 +278,20 @@
         font-size: 0.75rem;
         margin-top: -30px;
         margin-left: -45px;
+    }
+    /* Slightly tighter spacing for burger near cart */
+    .mobile-menu-btn {
+        margin-left: 20px;
+    }
+}
+
+@media (max-width: 360px) {
+    .nav-logo a {
+        padding-right: 10px;
+        margin-right: 10px;
+    }
+
+    .mobile-menu-btn {
+        margin-left: 15px;
     }
 }
