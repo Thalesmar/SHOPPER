@@ -8,7 +8,7 @@ export const ShopCategory = (props) => {
     const {all_product} = useContext(ShopContext);
     const [sortBy, setSortBy] = useState('default');
     const [showDropdown, setShowDropdown] = useState(false);
-    const [visibleProducts, setVisibleProducts] = useState(16); // Show 16 products initially
+    const [visibleProducts, setVisibleProducts] = useState(16);
     const [isLoading, setIsLoading] = useState(false);
     const [showAll, setShowAll] = useState(false);
     const dropdownRef = useRef(null);
