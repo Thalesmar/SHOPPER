@@ -6,6 +6,7 @@ import { ShopCategory } from './pages/ShopCategory';
 import { Product } from './pages/Product';
 import { Cart } from './pages/Cart';
 import { LoginSignup } from './pages/LoginSignup';
+import Footer from './Component/Footer/Footer';
 
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
             <Route path='/cart' element={<Cart/>}/>
             <Route path='/login' element={<LoginSignup/>}/>
         </Routes>
+        <Footer />
     </div>
   )
 }

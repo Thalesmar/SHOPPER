@@ -4,7 +4,6 @@ import Popular  from '../Component/Popular/Popular'
 import { Offers } from '../Component/Offers/Offers'
 import { NewCollections } from '../Component/NewCollections/NewCollections'
 import { NewsLetter } from '../Component/NewsLetter/NewsLetter'
-import Footer from '../Component/Footer/Footer'
 
 
 const Shop = () => {
@@ -15,7 +14,6 @@ const Shop = () => {
         <Offers />
         <NewCollections/>
         <NewsLetter />
-        <Footer />
     </div>
   )
 }
