@@ -12,7 +12,7 @@ const NavBar = () => {
   return (
     <div className='navbar'>
         <div className='nav-logo'>
-            <Link to="/" className="nav-logo-link">
+            <Link to="/" className="nav-logo-link" onClick={() => setMenu('shop')}>
                 <img src={logo} alt="Shopper logo" />
                 <p>Shopper</p>
             </Link>
