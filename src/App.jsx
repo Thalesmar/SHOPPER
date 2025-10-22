@@ -12,12 +12,12 @@ import men_banner from './Component/Assets/banner_mens.png' ;
 import women_banner from './Component/Assets/banner_women.png' ;
 import kid_banner from './Component/Assets/banner_kids.png' ;
 
-
 const App = () => {
   return (
-  <div>
+  <div className="app">
     <Navbar/>
-    <Routes>
+    <main className="main-content">
+        <Routes>
             <Route path='/' element={<Shop/>}/>
             <Route path='/men' element={<ShopCategory banner={men_banner} category="men"/>}/>
             <Route path='/women' element={<ShopCategory banner={women_banner} category="women"/>}/>
@@ -27,8 +27,9 @@ const App = () => {
             <Route path='/login' element={<LoginSignup/>}/>
             <Route path='/orders' element={<Orders/>}/>
         </Routes>
-        <Footer />
-    </div>
+    </main>
+    <Footer />
+  </div>
   )
 }
 
