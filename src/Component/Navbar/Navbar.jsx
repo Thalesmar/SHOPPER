@@ -12,14 +12,14 @@ const NavBar = () => {
   return (
     <div className='navbar'>
         <div className='nav-logo'>
-            <Link to="/Shop" className="nav-logo-link">
+            <Link to="/" className="nav-logo-link">
                 <img src={logo} alt="Shopper logo" />
                 <p>Shopper</p>
             </Link>
         </div>
 
         {/* Mobile menu button */}
-        <div className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+        <div className={`mobile-menu-btn ${mobileMenuOpen ? 'active' : ''}`} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             <span></span>
             <span></span>
             <span></span>
