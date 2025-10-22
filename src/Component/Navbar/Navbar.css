@@ -142,6 +142,17 @@
     cursor: pointer;
 }
 
+/* Mobile login item hidden by default on desktop */
+.nav-mobile-login { display: none !important; }
+.mobile-login-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 30px;
+    background-color: #FF4141;
+    color: #fff;
+    font-weight: 600;
+}
+
 .nav-login-cart button a{
     color: #FF4141;
     list-style: none;
@@ -187,6 +198,12 @@
         display: flex;
     }
 
+    /* Show mobile login item inside menu */
+    .nav-mobile-login { display: block !important; }
+
+    /* Hide desktop login button on mobile */
+    .desktop-login-btn { display: none; }
+
     .nav-menu {
         position: absolute;
         top: 100%;
@@ -229,6 +246,7 @@
 }
 
 @media (max-width: 480px) {
+
 
     .nav-logo p {
         font-size: 1.5rem;

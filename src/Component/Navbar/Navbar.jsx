@@ -30,9 +30,13 @@ const NavBar = () => {
             <li onClick={()=>{setMenu('men'); setMobileMenuOpen(false)}}><Link style={{ textDecoration: 'none'}} to="/men">Men</Link> {menu === "men" ? <hr></hr> : <></>}</li>
             <li onClick={()=>{setMenu('women'); setMobileMenuOpen(false)}}><Link style={{ textDecoration: 'none'}} to="/women">Women</Link> {menu === "women" ? <hr></hr> : <></>}</li>
             <li onClick={()=>{setMenu('kids'); setMobileMenuOpen(false)}}><Link style={{ textDecoration: 'none'}} to="/kids">Kids</Link> {menu === "kids" ? <hr></hr> : <></>}</li>
+            {/* Mobile-only Login item */}
+            <li className="nav-mobile-login" onClick={()=>{setMobileMenuOpen(false)}}>
+                <Link className="mobile-login-btn" to="/login">Login</Link>
+            </li>
         </ul>
         <div className='nav-login-cart'>
-            <button><Link to="/login">Login</Link></button>
+            <button className="desktop-login-btn"><Link to="/login">Login</Link></button>
             <Link to="/cart"><img src={cart_icon} alt="" loading="lazy" /></Link>
             <div className="nav-cart-count">0</div>
         </div>
