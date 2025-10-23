@@ -1,15 +1,15 @@
 import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './CartItems.css';
 import { ShopContext } from '../../Context/ShopContextInstance';
-import { Notification } from '../Notification/Notification';
 import remove_icon from '../Assets/cart_cross_icon.png';
 
 export const CartItems = () => {
-    const {all_product,cartItems,addToCart,removeFromCart,clearCart,setCartItems} = useContext(ShopContext);
+    const {all_product,cartItems,addToCart,removeFromCart,isLoggedIn} = useContext(ShopContext);
     const [promoCode, setPromoCode] = useState('');
     const [appliedPromo, setAppliedPromo] = useState(null);
     const [promoError, setPromoError] = useState('');
-    const [notification, setNotification] = useState({ message: '', type: 'info' });
+    const navigate = useNavigate();
 
     // Sample promo codes
     const validPromoCodes = {
@@ -69,13 +69,6 @@ export const CartItems = () => {
         setPromoError('');
     };
 
-    // Clear cart function
-    const handleClearCart = () => {
-        if (window.confirm('Are you sure you want to clear your cart?')) {
-            clearCart();
-        }
-    };
-
     // Get cart items that have quantity > 0
     const cartProducts = all_product.filter((product) => cartItems[product.id] > 0);
 
@@ -122,12 +115,7 @@ export const CartItems = () => {
                                 <p>${e.new_price * cartItems[e.id]}</p>
                                 <img
                                     src={remove_icon}
-                                    onClick={() => {
-                                        // Remove all instances of this item from cart
-                                        const newCart = {...cartItems};
-                                        newCart[e.id] = 0;
-                                        setCartItems(newCart);
-                                    }}
+                                    onClick={() => {removeFromCart(e.id)}}
                                     alt="Remove"
                                     className="remove-icon"
                                 />
@@ -192,60 +180,21 @@ export const CartItems = () => {
                             </div>
                             <p>Total Items: {totalItems}</p>
                         </div>
-                        <button
+                        <button 
                             className="checkout-btn"
                             onClick={() => {
-                                if (cartProducts.length === 0) {
-                                    setNotification({ message: 'Your cart is empty!', type: 'warning' });
-                                    return;
+                                if (!isLoggedIn) {
+                                    navigate('/login');
+                                } else {
+                                    navigate('/checkout');
                                 }
-
-                                const orderData = {
-                                    orderId: Date.now(),
-                                    items: cartProducts.map(product => ({
-                                        id: product.id,
-                                        name: product.name,
-                                        price: product.new_price,
-                                        quantity: cartItems[product.id],
-                                        total: product.new_price * cartItems[product.id]
-                                    })),
-                                    subtotal: totalAmount,
-                                    discount: discount,
-                                    total: finalTotal,
-                                    timestamp: new Date().toISOString()
-                                };
-
-                                // Save order to localStorage
-                                const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-                                orders.push(orderData);
-                                localStorage.setItem('orders', JSON.stringify(orders));
-
-                                // Clear cart
-                                clearCart();
-
-                                setNotification({
-                                    message: `Order placed successfully! Order ID: ${orderData.orderId}`,
-                                    type: 'success'
-                                });
                             }}
                         >
-                            Proceed to Checkout
-                        </button>
-                        <button
-                            className="clear-cart-btn"
-                            onClick={handleClearCart}
-                            style={{marginTop: '10px', width: '100%'}}
-                        >
-                            Clear Cart
+                            {isLoggedIn ? 'Proceed to Checkout' : 'Login to Checkout'}
                         </button>
                     </div>
                 </>
             )}
-            <Notification
-                message={notification.message}
-                type={notification.type}
-                onClose={() => setNotification({ message: '', type: 'info' })}
-            />
         </div>
     )
 }

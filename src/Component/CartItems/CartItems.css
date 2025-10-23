@@ -68,6 +68,14 @@
     color: #454545;
     cursor: pointer;
     transition: all 0.3s ease;
+    outline: none !important;
+}
+
+.quantity-btn:focus,
+.quantity-btn:active,
+.quantity-btn:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .quantity-btn:hover {
@@ -137,6 +145,14 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.3s ease;
+    outline: none !important;
+}
+
+.checkout-btn:focus,
+.checkout-btn:active,
+.checkout-btn:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .checkout-btn:hover {
@@ -193,6 +209,17 @@
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
+    outline: none !important;
+}
+
+.apply-promo-btn:focus,
+.apply-promo-btn:active,
+.apply-promo-btn:focus-visible,
+.remove-promo-btn:focus,
+.remove-promo-btn:active,
+.remove-promo-btn:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .apply-promo-btn {

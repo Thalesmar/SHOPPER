@@ -163,9 +163,16 @@
     color: white;
 }
 
+/* Product Actions Container */
+.product-actions {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+}
+
 /* Add to Cart Button */
-.productDisplay-right-size button {
-    width: 100%;
+.product-actions button:first-child {
+    flex: 2;
     padding: 16px 24px;
     background: #ff4141;
     color: white;
@@ -175,13 +182,63 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin: 20px 0;
+    outline: none !important;
 }
 
-.productDisplay-right-size button:hover {
+.product-actions button:first-child:hover {
     background: #e63939;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 65, 65, 0.3);
+}
+
+.product-actions button:first-child:focus,
+.product-actions button:first-child:active,
+.product-actions button:first-child:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Wishlist Button */
+.wishlist-btn {
+    flex: 1;
+    padding: 16px 20px;
+    background: #f8f9fa;
+    color: #333;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.wishlist-btn:hover {
+    background: #e9ecef;
+    border-color: #ff4141;
+    transform: translateY(-2px);
+}
+
+.wishlist-btn.in-wishlist {
+    background: #ff4141;
+    color: white;
+    border-color: #ff4141;
+}
+
+.wishlist-btn.in-wishlist:hover {
+    background: #e63939;
+    border-color: #e63939;
+}
+
+.wishlist-btn:focus,
+.wishlist-btn:active,
+.wishlist-btn:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* Category and Tags */
@@ -305,5 +362,15 @@
     .productDisplay-right-sizes div {
         padding: 10px 16px;
         font-size: 14px;
+    }
+
+    .product-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .wishlist-btn {
+        font-size: 12px;
+        padding: 12px 16px;
     }
 }

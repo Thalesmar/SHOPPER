@@ -36,7 +36,10 @@ const NavBar = () => {
             <li onClick={()=>{setMenu('women'); setMobileMenuOpen(false)}}><Link style={{ textDecoration: 'none'}} to="/women">Women</Link> {menu === "women" ? <hr></hr> : <></>}</li>
             <li onClick={()=>{setMenu('kids'); setMobileMenuOpen(false)}}><Link style={{ textDecoration: 'none'}} to="/kids">Kids</Link> {menu === "kids" ? <hr></hr> : <></>}</li>
             {isLoggedIn && (
-                <li onClick={()=>{setMenu('orders'); setMobileMenuOpen(false)}}><Link style={{ textDecoration: 'none'}} to="/orders">Orders</Link> {menu === "orders" ? <hr></hr> : <></>}</li>
+                <>
+                    <li onClick={()=>{setMenu('orders'); setMobileMenuOpen(false)}}><Link style={{ textDecoration: 'none'}} to="/orders">Orders</Link> {menu === "orders" ? <hr></hr> : <></>}</li>
+                    <li onClick={()=>{setMenu('wishlist'); setMobileMenuOpen(false)}}><Link style={{ textDecoration: 'none'}} to="/wishlist">Wishlist</Link> {menu === "wishlist" ? <hr></hr> : <></>}</li>
+                </>
             )}
             {/* Mobile-only Login/User item */}
             <li className="nav-mobile-login" onClick={()=>{setMobileMenuOpen(false)}}>

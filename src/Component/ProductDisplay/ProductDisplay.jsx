@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import './ProductDisplay.css';
 import star_icon from '../Assets/star_icon.png';
 import start_dull_icon from '../Assets/star_dull_icon.png';
@@ -6,7 +6,37 @@ import { ShopContext } from '../../Context/ShopContextInstance';
 
 export const ProductDisplay = (props) => {
     const {product} = props;
-    const {addToCart} = useContext(ShopContext);
+    const {addToCart, user, isLoggedIn} = useContext(ShopContext);
+    const [isInWishlist, setIsInWishlist] = useState(false);
+
+    // Check if product is in wishlist
+    useEffect(() => {
+        if (isLoggedIn && user) {
+            const wishlist = JSON.parse(localStorage.getItem(`wishlist_${user.id}`) || '[]');
+            setIsInWishlist(wishlist.includes(product.id));
+        }
+    }, [product.id, user, isLoggedIn]);
+
+    const toggleWishlist = () => {
+        if (!isLoggedIn) {
+            alert('Please log in to add items to your wishlist');
+            return;
+        }
+
+        const wishlist = JSON.parse(localStorage.getItem(`wishlist_${user.id}`) || '[]');
+        
+        if (isInWishlist) {
+            // Remove from wishlist
+            const updatedWishlist = wishlist.filter(id => id !== product.id);
+            localStorage.setItem(`wishlist_${user.id}`, JSON.stringify(updatedWishlist));
+            setIsInWishlist(false);
+        } else {
+            // Add to wishlist
+            const updatedWishlist = [...wishlist, product.id];
+            localStorage.setItem(`wishlist_${user.id}`, JSON.stringify(updatedWishlist));
+            setIsInWishlist(true);
+        }
+    };
   return (
     <div className='productDisplay'>
        <div className="productDisplay-left">
@@ -46,7 +76,16 @@ export const ProductDisplay = (props) => {
                 <div>XL</div>
                 <div>XXL</div>
             </div>
-            <button onClick={()=>{addToCart(product.id)}}>ADD TO CART</button>
+            <div className="product-actions">
+                <button onClick={()=>{addToCart(product.id)}}>ADD TO CART</button>
+                <button 
+                    className={`wishlist-btn ${isInWishlist ? 'in-wishlist' : ''}`}
+                    onClick={toggleWishlist}
+                    title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                >
+                    {isInWishlist ? '♥' : '♡'} {isInWishlist ? 'IN WISHLIST' : 'ADD TO WISHLIST'}
+                </button>
+            </div>
         </div>
         <p className='productDisplay-right-category'><span>Category: </span>Women, T-Shirt, Crop Top</p>
         <p className='productDisplay-left-category'><span>Tags: </span>Modern, Latest</p>

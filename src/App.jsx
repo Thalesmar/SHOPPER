@@ -5,8 +5,10 @@ import Shop from './pages/Shop';
 import { ShopCategory } from './pages/ShopCategory';
 import { Product } from './pages/Product';
 import { Cart } from './pages/Cart';
+import { Checkout } from './pages/Checkout';
 import { LoginSignup } from './pages/LoginSignup';
 import { Orders } from './pages/Orders';
+import { Wishlist } from './pages/Wishlist';
 import Footer from './Component/Footer/Footer';
 import men_banner from './Component/Assets/banner_mens.png' ;
 import women_banner from './Component/Assets/banner_women.png' ;
@@ -24,8 +26,10 @@ const App = () => {
             <Route path='/kids' element={<ShopCategory banner={kid_banner} category="kid"/>}/>
             <Route path='/product/:productId' element={<Product/>}/>
             <Route path='/cart' element={<Cart/>}/>
+            <Route path='/checkout' element={<Checkout/>}/>
             <Route path='/login' element={<LoginSignup/>}/>
             <Route path='/orders' element={<Orders/>}/>
+            <Route path='/wishlist' element={<Wishlist/>}/>
         </Routes>
     </main>
     <Footer />

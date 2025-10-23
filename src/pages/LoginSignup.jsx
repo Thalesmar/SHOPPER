@@ -18,6 +18,7 @@ export const LoginSignup = () => {
   const [notification, setNotification] = useState({ message: '', type: 'info' });
   const navigate = useNavigate();
 
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -36,7 +37,8 @@ export const LoginSignup = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.name.trim()) {
+    // Only validate name for signup, not login
+    if (!isLogin && !formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
 
@@ -60,6 +62,19 @@ export const LoginSignup = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Simple hash function for password hashing (in production, use bcrypt)
+  const hashPassword = (password) => {
+    if (!password || password.length === 0) return '0';
+    
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+      const char = password.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return hash.toString();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,10 +91,26 @@ export const LoginSignup = () => {
       if (isLogin) {
         // Login logic
         const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const user = users.find(u => u.email === formData.email && u.password === formData.password);
+        const hashedPassword = hashPassword(formData.password);
+        
+        
+        // Try to find user with hashed password first
+        let user = users.find(u => u.email === formData.email && u.password === hashedPassword);
+        
+        // If not found, try with plain text password (for backward compatibility)
+        if (!user) {
+          user = users.find(u => u.email === formData.email && u.password === formData.password);
+           // If found with plain text, update to hashed password
+           if (user) {
+             user.password = hashedPassword;
+             localStorage.setItem('users', JSON.stringify(users));
+           }
+        }
 
         if (user) {
-          login(user);
+          // Remove password from user object before storing in context
+          const { password, ...userWithoutPassword } = user;
+          login(userWithoutPassword);
           setNotification({ message: 'Login successful!', type: 'success' });
           setTimeout(() => navigate('/'), 1000);
         } else {
@@ -95,17 +126,23 @@ export const LoginSignup = () => {
           return;
         }
 
+        const hashedPassword = hashPassword(formData.password);
+        
+        
         const newUser = {
           id: Date.now(),
           name: formData.name,
           email: formData.email,
-          password: formData.password,
+          password: hashedPassword,
           createdAt: new Date().toISOString()
         };
 
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
-        login(newUser);
+        
+        // Remove password from user object before storing in context
+        const { password, ...userWithoutPassword } = newUser;
+        login(userWithoutPassword);
 
         setNotification({ message: 'Sign up successful!', type: 'success' });
         setTimeout(() => navigate('/'), 1000);
@@ -194,6 +231,7 @@ export const LoginSignup = () => {
                     {isLogin ? 'Sign Up' : 'Log In'}
                 </span>
             </p>
+            
             {!isLogin && (
                 <div className='loginSignup-agree'>
                     <input type="checkbox" name='agree' id='agree' required />

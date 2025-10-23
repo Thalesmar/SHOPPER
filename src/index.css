@@ -60,7 +60,7 @@ a {
     .container {
         padding: 0 15px;
     }
-    
+
     body {
         padding-top: 70px; /* Adjust for smaller navbar on mobile */
     }
@@ -70,7 +70,7 @@ a {
     .container {
         padding: 0 10px;
     }
-    
+
     body {
         padding-top: 60px; /* Further adjust for mobile navbar */
     }
@@ -90,11 +90,51 @@ img {
     display: block;
 }
 
-/* Improve button accessibility */
+/* Remove all outlines from buttons and interactive elements */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"],
+[tabindex] {
+    outline: none !important;
+}
+
 button:focus,
-a:focus {
-    outline: 2px solid #ff4141;
-    outline-offset: 2px;
+button:active,
+button:focus-visible,
+a:focus,
+a:active,
+a:focus-visible,
+input:focus,
+input:active,
+input:focus-visible,
+select:focus,
+select:active,
+select:focus-visible,
+textarea:focus,
+textarea:active,
+textarea:focus-visible,
+[role="button"]:focus,
+[role="button"]:active,
+[role="button"]:focus-visible,
+[tabindex]:focus,
+[tabindex]:active,
+[tabindex]:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Enhanced button hover states */
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Loading states */
