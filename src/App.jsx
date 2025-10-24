@@ -9,6 +9,9 @@ import { Checkout } from './pages/Checkout';
 import { LoginSignup } from './pages/LoginSignup';
 import { Orders } from './pages/Orders';
 import { Wishlist } from './pages/Wishlist';
+import About from './pages/About';
+import Company from './pages/Company';
+import Contact from './pages/Contact';
 import Footer from './Component/Footer/Footer';
 import men_banner from './Component/Assets/banner_mens.png' ;
 import women_banner from './Component/Assets/banner_women.png' ;
@@ -30,6 +33,9 @@ const App = () => {
             <Route path='/login' element={<LoginSignup/>}/>
             <Route path='/orders' element={<Orders/>}/>
             <Route path='/wishlist' element={<Wishlist/>}/>
+            <Route path='/about' element={<About/>}/>
+            <Route path='/company' element={<Company/>}/>
+            <Route path='/contact' element={<Contact/>}/>
         </Routes>
     </main>
     <Footer />

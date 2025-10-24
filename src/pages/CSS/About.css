@@ -1,0 +1,181 @@
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+    min-height: 80vh;
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.about-header h1 {
+    font-size: 3rem;
+    color: #171717;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.about-header p {
+    font-size: 1.2rem;
+    color: #666;
+    font-style: italic;
+}
+
+.about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.about-section {
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 12px;
+    border-left: 4px solid #ff4141;
+}
+
+.about-section h2 {
+    color: #171717;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.about-section p {
+    color: #555;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.about-section ul {
+    color: #555;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    padding-left: 20px;
+}
+
+.about-section li {
+    margin-bottom: 8px;
+}
+
+.about-cta {
+    text-align: center;
+    background: linear-gradient(135deg, #ff4141, #ff6b6b);
+    color: white;
+    padding: 40px;
+    border-radius: 12px;
+    margin-top: 40px;
+}
+
+.about-cta h3 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.about-cta p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cta-button {
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.cta-button.primary {
+    background: white;
+    color: #ff4141;
+}
+
+.cta-button.secondary {
+    background: transparent;
+    color: white;
+    border-color: white;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .about-container {
+        padding: 80px 15px 30px;
+    }
+
+    .about-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .about-header p {
+        font-size: 1.1rem;
+    }
+
+    .about-section {
+        padding: 25px;
+    }
+
+    .about-section h2 {
+        font-size: 1.6rem;
+    }
+
+    .about-section p,
+    .about-section ul {
+        font-size: 1rem;
+    }
+
+    .about-cta {
+        padding: 30px 20px;
+    }
+
+    .about-cta h3 {
+        font-size: 1.8rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cta-button {
+        width: 200px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-header h1 {
+        font-size: 2rem;
+    }
+
+    .about-section {
+        padding: 20px;
+    }
+
+    .about-section h2 {
+        font-size: 1.4rem;
+    }
+
+    .about-cta h3 {
+        font-size: 1.6rem;
+    }
+}
