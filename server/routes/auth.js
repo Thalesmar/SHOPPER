@@ -2,154 +2,152 @@
  * Authentication Routes
  * 
  * This file defines all the routes related to user authentication.
- * It handles registration, login, and profile management.
  */
 
 import express from 'express';
-import { 
-  register, 
-  login, 
-  getProfile, 
-  updateProfile 
-} from '../controllers/authController.js';
-import { authenticateToken } from '../middleware/auth.js';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 const router = express.Router();
 
 /**
  * POST /api/auth/register
  * Register a new user
- * 
- * Request body:
- * {
- *   "username": "john_doe",
- *   "email": "john@example.com",
- *   "password": "password123"
- * }
- * 
- * Frontend integration:
- * fetch('/api/auth/register', {
- *   method: 'POST',
- *   headers: {
- *     'Content-Type': 'application/json'
- *   },
- *   body: JSON.stringify({
- *     username: 'john_doe',
- *     email: 'john@example.com',
- *     password: 'password123'
- *   })
- * })
- * .then(response => response.json())
- * .then(data => {
- *   if (data.success) {
- *     console.log('User registered:', data.data.user);
- *     console.log('Token:', data.data.token);
- *     // Store token in localStorage or sessionStorage
- *     localStorage.setItem('token', data.data.token);
- *   } else {
- *     console.error('Registration failed:', data.message);
- *   }
- * });
  */
-router.post('/register', register);
+router.post('/register', async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    
+    // Validate required fields
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username, email, and password are required'
+      });
+    }
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }]
+    });
+    
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: 'User with this email or username already exists'
+      });
+    }
+    
+    // Create new user
+    const user = new User({
+      username,
+      email,
+      password
+    });
+    
+    await user.save();
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '7d' }
+    );
+    
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully',
+      data: {
+        user: user.toJSON(),
+        token
+      }
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Registration failed'
+    });
+  }
+});
 
 /**
  * POST /api/auth/login
  * Login user
- * 
- * Request body:
- * {
- *   "email": "john@example.com",
- *   "password": "password123"
- * }
- * 
- * Frontend integration:
- * fetch('/api/auth/login', {
- *   method: 'POST',
- *   headers: {
- *     'Content-Type': 'application/json'
- *   },
- *   body: JSON.stringify({
- *     email: 'john@example.com',
- *     password: 'password123'
- *   })
- * })
- * .then(response => response.json())
- * .then(data => {
- *   if (data.success) {
- *     console.log('Login successful:', data.data.user);
- *     console.log('Token:', data.data.token);
- *     // Store token in localStorage or sessionStorage
- *     localStorage.setItem('token', data.data.token);
- *   } else {
- *     console.error('Login failed:', data.message);
- *   }
- * });
  */
-router.post('/login', login);
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required'
+      });
+    }
+    
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
+    
+    // Check password
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '7d' }
+    );
+    
+    res.json({
+      success: true,
+      message: 'Login successful',
+      data: {
+        user: user.toJSON(),
+        token
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Login failed'
+    });
+  }
+});
 
 /**
- * GET /api/auth/profile
- * Get current user profile
- * Requires authentication
- * 
- * Headers:
- * Authorization: Bearer <token>
- * 
- * Frontend integration:
- * const token = localStorage.getItem('token');
- * fetch('/api/auth/profile', {
- *   headers: {
- *     'Authorization': `Bearer ${token}`
- *   }
- * })
- * .then(response => response.json())
- * .then(data => {
- *   if (data.success) {
- *     console.log('User profile:', data.data);
- *   } else {
- *     console.error('Failed to get profile:', data.message);
- *   }
- * });
+ * GET /api/auth/users
+ * Get all users (for testing)
  */
-router.get('/profile', authenticateToken, getProfile);
-
-/**
- * PUT /api/auth/profile
- * Update user profile
- * Requires authentication
- * 
- * Headers:
- * Authorization: Bearer <token>
- * 
- * Request body:
- * {
- *   "username": "new_username",
- *   "email": "newemail@example.com"
- * }
- * 
- * Frontend integration:
- * const token = localStorage.getItem('token');
- * fetch('/api/auth/profile', {
- *   method: 'PUT',
- *   headers: {
- *     'Content-Type': 'application/json',
- *     'Authorization': `Bearer ${token}`
- *   },
- *   body: JSON.stringify({
- *     username: 'new_username',
- *     email: 'newemail@example.com'
- *   })
- * })
- * .then(response => response.json())
- * .then(data => {
- *   if (data.success) {
- *     console.log('Profile updated:', data.data);
- *   } else {
- *     console.error('Update failed:', data.message);
- *   }
- * });
- */
-router.put('/profile', authenticateToken, updateProfile);
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find().select('-password');
+    res.json({
+      success: true,
+      data: users,
+      count: users.length
+    });
+  } catch (error) {
+    console.error('Get users error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get users'
+    });
+  }
+});
 
 export default router;

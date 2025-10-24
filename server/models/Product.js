@@ -1,63 +1,32 @@
 /**
- * Product Model
+ * Product Model using Mongoose
  * 
- * This class represents a product in our e-commerce system.
- * Based on your frontend data structure from all_product.js
+ * This model defines the Product schema for MongoDB
  */
 
-class Product {
-  constructor(id, name, category, image, newPrice, oldPrice, description = '') {
-    this.id = id;
-    this.name = name;
-    this.category = category; // 'women', 'men', 'kid'
-    this.image = image; // Image URL or path
-    this.new_price = newPrice; // Current price
-    this.old_price = oldPrice; // Original price (for showing discounts)
-    this.description = description;
-    this.createdAt = new Date();
-    this.updatedAt = new Date();
-  }
+import mongoose from 'mongoose';
 
-  // Calculate discount percentage
-  getDiscountPercentage() {
-    if (this.old_price <= this.new_price) return 0;
-    return Math.round(((this.old_price - this.new_price) / this.old_price) * 100);
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Product name is required'],
+    trim: true,
+    maxlength: [200, 'Product name cannot exceed 200 characters']
+  },
+  price: {
+    type: Number,
+    required: [true, 'Product price is required'],
+    min: [0, 'Price cannot be negative']
+  },
+  inStock: {
+    type: Boolean,
+    default: true
   }
+}, {
+  timestamps: true // Adds createdAt and updatedAt fields
+});
 
-  // Check if product is on sale
-  isOnSale() {
-    return this.old_price > this.new_price;
-  }
-
-  // Return product data for API responses
-  toJSON() {
-    return {
-      id: this.id,
-      name: this.name,
-      category: this.category,
-      image: this.image,
-      new_price: this.new_price,
-      old_price: this.old_price,
-      description: this.description,
-      discount_percentage: this.getDiscountPercentage(),
-      is_on_sale: this.isOnSale(),
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt
-    };
-  }
-
-  // Static method to create a new product
-  static create(productData) {
-    return new Product(
-      productData.id,
-      productData.name,
-      productData.category,
-      productData.image,
-      productData.new_price,
-      productData.old_price,
-      productData.description
-    );
-  }
-}
+// Create and export the Product model
+const Product = mongoose.model('Product', productSchema);
 
 export default Product;

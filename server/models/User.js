@@ -1,56 +1,64 @@
 /**
- * User Model
+ * User Model using Mongoose
  * 
- * This class represents a user in our e-commerce system.
- * In a real application, this would be replaced with a database model
- * (like Mongoose for MongoDB, Sequelize for PostgreSQL, etc.)
+ * This model defines the User schema for MongoDB
  */
 
+import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-class User {
-  constructor(id, username, email, password) {
-    this.id = id;
-    this.username = username;
-    this.email = email;
-    this.password = password; // This will be hashed
-    this.createdAt = new Date();
-    this.updatedAt = new Date();
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: [true, 'Username is required'],
+    unique: true,
+    trim: true,
+    minlength: [3, 'Username must be at least 3 characters'],
+    maxlength: [30, 'Username cannot exceed 30 characters']
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+  },
+  password: {
+    type: String,
+    required: [true, 'Password is required'],
+    minlength: [6, 'Password must be at least 6 characters']
   }
+}, {
+  timestamps: true // Adds createdAt and updatedAt fields
+});
 
-  // Hash password before saving
-  async hashPassword() {
-    const saltRounds = 12; // Higher number = more secure but slower
-    this.password = await bcrypt.hash(this.password, saltRounds);
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  
+  try {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
   }
+});
 
-  // Compare password for login
-  async comparePassword(candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password);
-  }
+// Compare password method
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 
-  // Return user data without password (for API responses)
-  toJSON() {
-    return {
-      id: this.id,
-      username: this.username,
-      email: this.email,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt
-    };
-  }
+// Remove password from JSON output
+userSchema.methods.toJSON = function() {
+  const user = this.toObject();
+  delete user.password;
+  return user;
+};
 
-  // Static method to create a new user
-  static async create(userData) {
-    const user = new User(
-      userData.id,
-      userData.username,
-      userData.email,
-      userData.password
-    );
-    await user.hashPassword();
-    return user;
-  }
-}
+// Create and export the User model
+const User = mongoose.model('User', userSchema);
 
 export default User;

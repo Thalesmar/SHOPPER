@@ -1,74 +1,36 @@
 /**
- * SHOPPER Backend Server
+ * SHOPPER Backend Server with MongoDB
  * Main entry point for the Express.js API server
  * 
- * This file sets up the Express server with all necessary middleware,
- * routes, and error handling for the e-commerce backend.
+ * This file sets up the Express server with MongoDB connection,
+ * Product model, and API routes for product management.
  */
 
 import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-
-// Import route handlers
+import Product from './models/Product.js';
 import authRoutes from './routes/auth.js';
-import productRoutes from './routes/products.js';
-import cartRoutes from './routes/cart.js';
-import orderRoutes from './routes/orders.js';
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/shopper';
 
-// Security middleware
-app.use(helmet()); // Sets various HTTP headers for security
+// Middleware
+app.use(express.json()); // Parse JSON requests
 
-// Rate limiting to prevent abuse
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: {
-    success: false,
-    message: 'Too many requests from this IP, please try again later.'
-  }
-});
-app.use(limiter);
-
-// CORS configuration for your GitHub Pages frontend
-app.use(cors({
-  origin: [
-    'https://thalesmar.github.io', // Your GitHub Pages domain
-    'http://localhost:3000',        // Local development
-    'http://localhost:5173'         // Vite dev server
-  ],
-  credentials: true, // Allow cookies and authorization headers
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Body parsing middleware
-app.use(express.json({ limit: '10mb' })); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
-
-// Request logging middleware (simple version)
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-  next();
-});
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'SHOPPER Backend API is running!',
-    timestamp: new Date().toISOString(),
-    version: '1.0.0'
+// MongoDB Connection
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log('✅ Connected to MongoDB successfully');
+  })
+  .catch((error) => {
+    console.error('❌ MongoDB connection error:', error);
+    process.exit(1);
   });
-});
 
 // API root endpoint
 app.get('/api', (req, res) => {
@@ -78,13 +40,72 @@ app.get('/api', (req, res) => {
   });
 });
 
-// API Routes
-app.use('/api/auth', authRoutes);      // Authentication routes
-app.use('/api/products', productRoutes); // Product routes
-app.use('/api/cart', cartRoutes);      // Shopping cart routes
-app.use('/api/orders', orderRoutes);   // Order routes
+// Authentication routes
+app.use('/api/auth', authRoutes);
 
-// 404 handler for undefined routes
+// GET /api/products - Get all products
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json({
+      success: true,
+      data: products,
+      count: products.length
+    });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch products'
+    });
+  }
+});
+
+// POST /api/products - Add a new product
+app.post('/api/products', async (req, res) => {
+  try {
+    const { name, price, inStock } = req.body;
+    
+    // Validate required fields
+    if (!name || !price) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name and price are required'
+      });
+    }
+    
+    // Validate price is a number
+    if (typeof price !== 'number' || price < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Price must be a positive number'
+      });
+    }
+    
+    // Create new product
+    const product = new Product({
+      name,
+      price,
+      inStock: inStock !== undefined ? inStock : true
+    });
+    
+    const savedProduct = await product.save();
+    
+    res.status(201).json({
+      success: true,
+      message: 'Product created successfully',
+      data: savedProduct
+    });
+  } catch (error) {
+    console.error('Error creating product:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create product'
+    });
+  }
+});
+
+// Catch-all 404 handler for undefined routes
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
@@ -95,36 +116,18 @@ app.use('*', (req, res) => {
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  
-  // Handle specific error types
-  if (err.name === 'ValidationError') {
-    return res.status(400).json({
-      success: false,
-      message: 'Validation error',
-      errors: err.errors
-    });
-  }
-  
-  if (err.name === 'JsonWebTokenError') {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid token'
-    });
-  }
-  
-  // Default error response
-  res.status(err.status || 500).json({
+  res.status(500).json({
     success: false,
-    message: err.message || 'Internal server error'
+    message: 'Internal server error'
   });
 });
 
 // Start the server
 app.listen(PORT, () => {
   console.log(`🚀 SHOPPER Backend Server running on port ${PORT}`);
-  console.log(`📱 Health check: http://localhost:${PORT}/health`);
-  console.log(`🌐 API Base URL: http://localhost:${PORT}/api`);
-  console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'https://thalesmar.github.io'}`);
+  console.log(`📱 API Root: http://localhost:${PORT}/api`);
+  console.log(`🛍️ Products: http://localhost:${PORT}/api/products`);
+  console.log(`🗄️ MongoDB: ${MONGODB_URI}`);
 });
 
 export default app;
