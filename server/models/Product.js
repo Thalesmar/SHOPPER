@@ -7,15 +7,35 @@
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
+  id: {
+    type: Number,
+    unique: true,
+    required: true
+  },
   name: {
     type: String,
     required: [true, 'Product name is required'],
     trim: true,
     maxlength: [200, 'Product name cannot exceed 200 characters']
   },
-  price: {
+  category: {
+    type: String,
+    required: [true, 'Product category is required'],
+    enum: ['men', 'women', 'kid'],
+    lowercase: true
+  },
+  image: {
+    type: String,
+    required: [true, 'Product image is required']
+  },
+  new_price: {
     type: Number,
-    required: [true, 'Product price is required'],
+    required: [true, 'Product new price is required'],
+    min: [0, 'Price cannot be negative']
+  },
+  old_price: {
+    type: Number,
+    required: [true, 'Product old price is required'],
     min: [0, 'Price cannot be negative']
   },
   inStock: {

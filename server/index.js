@@ -9,28 +9,60 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import process from 'process';
 import Product from './models/Product.js';
 import authRoutes from './routes/auth.js';
+import cartRoutes from './routes/cart.js';
+import orderRoutes from './routes/orders.js';
+import productRoutes from './routes/products.js';
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/shopper';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
 
 // Middleware
-app.use(express.json()); // Parse JSON requests
+app.use(helmet()); // Security headers
+app.use(limiter); // Rate limiting
+app.use(cors({
+  origin: [FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(express.json({ limit: '10mb' })); // Parse JSON requests
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded requests
 
-// MongoDB Connection
-mongoose.connect(MONGODB_URI)
-  .then(() => {
+// MongoDB Connection with retry logic
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(MONGODB_URI, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
     console.log('✅ Connected to MongoDB successfully');
-  })
-  .catch((error) => {
-    console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
-  });
+    console.log(`🗄️ Database: ${conn.connection.name}`);
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error.message);
+    console.log('⚠️ Running without database - some features may not work');
+    // Don't exit process, allow server to run without DB for development
+  }
+};
+
+connectDB();
 
 // API root endpoint
 app.get('/api', (req, res) => {
@@ -40,70 +72,12 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Authentication routes
+// Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/products', productRoutes);
 
-// GET /api/products - Get all products
-app.get('/api/products', async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.json({
-      success: true,
-      data: products,
-      count: products.length
-    });
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch products'
-    });
-  }
-});
-
-// POST /api/products - Add a new product
-app.post('/api/products', async (req, res) => {
-  try {
-    const { name, price, inStock } = req.body;
-    
-    // Validate required fields
-    if (!name || !price) {
-      return res.status(400).json({
-        success: false,
-        message: 'Name and price are required'
-      });
-    }
-    
-    // Validate price is a number
-    if (typeof price !== 'number' || price < 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Price must be a positive number'
-      });
-    }
-    
-    // Create new product
-    const product = new Product({
-      name,
-      price,
-      inStock: inStock !== undefined ? inStock : true
-    });
-    
-    const savedProduct = await product.save();
-    
-    res.status(201).json({
-      success: true,
-      message: 'Product created successfully',
-      data: savedProduct
-    });
-  } catch (error) {
-    console.error('Error creating product:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to create product'
-    });
-  }
-});
 
 // Catch-all 404 handler for undefined routes
 app.use('*', (req, res) => {
@@ -114,7 +88,7 @@ app.use('*', (req, res) => {
 });
 
 // Global error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error('Error:', err);
   res.status(500).json({
     success: false,
