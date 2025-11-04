@@ -7,29 +7,126 @@
  * The data structure is based on your frontend all_product.js file.
  */
 
-import User from '../models/User.js';
-import Product from '../models/Product.js';
-import { Cart } from '../models/Cart.js';
-import { Order, OrderItem } from '../models/Order.js';
+// Temporarily commented out to fix server startup
+// import User from '../models/User.js';
+// import Product from '../models/Product.js';
+// import { Cart } from '../models/Cart.js';
+// import { Order, OrderItem } from '../models/Order.js';
 
 // Sample products based on your frontend data
 export const products = [
   // Women's products (1-12)
-  new Product(1, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_1.png", 50.0, 80.5, "Beautiful striped blouse with flutter sleeves and peplum hem design."),
-  new Product(2, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_2.png", 85.0, 120.5, "Elegant striped blouse perfect for any occasion."),
-  new Product(3, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_3.png", 60.0, 100.5, "Comfortable and stylish striped blouse with modern design."),
-  new Product(4, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_4.png", 100.0, 150.0, "Premium quality striped blouse with elegant details."),
-  new Product(5, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_5.png", 85.0, 120.5, "Classic striped blouse with contemporary styling."),
-  new Product(6, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_6.png", 85.0, 120.5, "Versatile striped blouse for work or casual wear."),
-  new Product(7, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_7.png", 85.0, 120.5, "Trendy striped blouse with flattering silhouette."),
-  new Product(8, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_8.png", 85.0, 120.5, "Sophisticated striped blouse with premium finish."),
-  new Product(9, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_9.png", 85.0, 120.5, "Chic striped blouse with modern appeal."),
-  new Product(10, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_10.png", 85.0, 120.5, "Elegant striped blouse with refined details."),
-  new Product(11, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_11.png", 85.0, 120.5, "Stylish striped blouse with contemporary cut."),
-  new Product(12, "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse", "women", "/assets/product_12.png", 85.0, 120.5, "Beautiful striped blouse with timeless design."),
+  {
+    id: 1,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_1.png",
+    new_price: 50.0,
+    old_price: 80.5,
+    inStock: true
+  },
+  {
+    id: 2,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_2.png",
+    new_price: 85.0,
+    old_price: 120.5,
+    inStock: true
+  },
+  {
+    id: 3,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_3.png",
+    new_price: 60.0,
+    old_price: 100.5,
+    inStock: true
+  },
+  {
+    id: 4,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_4.png",
+    new_price: 100.0,
+    old_price: 150.0,
+    inStock: true
+  },
+  {
+    id: 5,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_5.png",
+    new_price: 85.0,
+    old_price: 120.5,
+    inStock: true
+  },
+  {
+    id: 6,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_6.png",
+    new_price: 85.0,
+    old_price: 120.5,
+    inStock: true
+  },
+  {
+    id: 7,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_7.png",
+    new_price: 85.0,
+    old_price: 120.5,
+    inStock: true
+  },
+  {
+    id: 8,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_8.png",
+    new_price: 85.0,
+    old_price: 120.5,
+    inStock: true
+  },
+  {
+    id: 9,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_9.png",
+    new_price: 85.0,
+    old_price: 120.5,
+    inStock: true
+  },
+  {
+    id: 10,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_10.png",
+    new_price: 85.0,
+    old_price: 120.5,
+    inStock: true
+  },
+  {
+    id: 11,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_11.png",
+    new_price: 85.0,
+    old_price: 120.5,
+    inStock: true
+  },
+  {
+    id: 12,
+    name: "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+    category: "women",
+    image: "/assets/product_12.png",
+    new_price: 85.0,
+    old_price: 120.5,
+    inStock: true
+  },
 
-  // Men's products (13-24)
-  new Product(13, "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket", "men", "/assets/product_13.png", 85.0, 120.5, "Modern green bomber jacket with full-zip design and slim fit."),
+  // Men's products (13-24) - Temporarily commented out
+  /* new Product(13, "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket", "men", "/assets/product_13.png", 85.0, 120.5, "Modern green bomber jacket with full-zip design and slim fit."),
   new Product(14, "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket", "men", "/assets/product_14.png", 85.0, 120.5, "Stylish green bomber jacket perfect for casual wear."),
   new Product(15, "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket", "men", "/assets/product_15.png", 85.0, 120.5, "Comfortable green bomber jacket with contemporary styling."),
   new Product(16, "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket", "men", "/assets/product_16.png", 85.0, 120.5, "Premium green bomber jacket with excellent craftsmanship."),
@@ -54,7 +151,7 @@ export const products = [
   new Product(33, "Boys Orange Colourblocked Hooded Sweatshirt", "kid", "/assets/product_33.png", 85.0, 120.5, "Chic orange sweatshirt with modern appeal."),
   new Product(34, "Boys Orange Colourblocked Hooded Sweatshirt", "kid", "/assets/product_34.png", 85.0, 120.5, "Elegant orange sweatshirt with refined details."),
   new Product(35, "Boys Orange Colourblocked Hooded Sweatshirt", "kid", "/assets/product_35.png", 85.0, 120.5, "Stylish orange sweatshirt with contemporary fit."),
-  new Product(36, "Boys Orange Colourblocked Hooded Sweatshirt", "kid", "/assets/product_36.png", 85.0, 120.5, "Beautiful orange sweatshirt with timeless design.")
+  new Product(36, "Boys Orange Colourblocked Hooded Sweatshirt", "kid", "/assets/product_36.png", 85.0, 120.5, "Beautiful orange sweatshirt with timeless design.") */
 ];
 
 // Sample users (for testing)
@@ -110,7 +207,8 @@ export const getProductsByCategory = (category) => {
 
 export const getUserCart = (userId) => {
   if (!carts.has(userId)) {
-    carts.set(userId, new Cart(userId));
+    // carts.set(userId, new Cart(userId));
+    carts.set(userId, { userId, items: [] });
   }
   return carts.get(userId);
 };
