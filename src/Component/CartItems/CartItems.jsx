@@ -1,11 +1,10 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import './CartItems.css';
 import { ShopContext } from '../../Context/ShopContextInstance';
 import remove_icon from '../Assets/cart_cross_icon.png';
 
 export const CartItems = () => {
-    const {all_product,cartItems,addToCart,removeFromCart,isLoggedIn} = useContext(ShopContext);
+    const { all_product, cartItems, addToCart, removeFromCart, isLoggedIn } = useContext(ShopContext);
     const [promoCode, setPromoCode] = useState('');
     const [appliedPromo, setAppliedPromo] = useState(null);
     const [promoError, setPromoError] = useState('');
@@ -73,8 +72,8 @@ export const CartItems = () => {
     const cartProducts = all_product.filter((product) => cartItems[product.id] > 0);
 
     return (
-        <div className='cartItems'>
-            <div className="cartItems-format-main">
+        <div className='my-24 mx-4 md:mx-40'>
+            <div className="grid grid-cols-[0.5fr_2fr_1fr_1fr_1fr_1fr] items-center gap-10 py-5 text-[#454545] text-lg font-semibold text-center md:text-left">
                 <p>Product</p>
                 <p>Title</p>
                 <p>Price</p>
@@ -82,31 +81,31 @@ export const CartItems = () => {
                 <p>Total</p>
                 <p>Remove</p>
             </div>
-            <hr />
+            <hr className="h-[3px] bg-[#e2e2e2] border-0" />
 
             {cartProducts.length === 0 ? (
-                <div className="cart-empty">
-                    <h2>Your cart is empty</h2>
-                    <p>Add some items to get started!</p>
+                <div className="text-center py-20">
+                    <h2 className="text-3xl font-bold text-gray-800 mb-4">Your cart is empty</h2>
+                    <p className="text-gray-600 mb-8">Add some items to get started!</p>
                 </div>
             ) : (
                 <>
                     {cartProducts.map((e) => (
                         <div key={e.id}>
-                            <div className="cartItems-format">
-                                <img src={e.image} className='cartIcon-product-icon' alt={e.name} />
+                            <div className="grid grid-cols-[0.5fr_2fr_1fr_1fr_1fr_1fr] items-center gap-10 py-5 text-[#454545] text-base font-medium border-b border-[#e2e2e2] text-center md:text-left">
+                                <img src={e.image} className='h-16 object-contain mx-auto md:mx-0' alt={e.name} />
                                 <p>{e.name}</p>
                                 <p>${e.new_price}</p>
-                                <div className="quantity-controls">
+                                <div className="flex items-center justify-center md:justify-start gap-3">
                                     <button
-                                        className="quantity-btn"
+                                        className="w-8 h-8 bg-[#f0f0f0] border border-[#ebebeb] cursor-pointer hover:bg-[#e0e0e0] flex items-center justify-center"
                                         onClick={() => removeFromCart(e.id)}
                                     >
                                         -
                                     </button>
-                                    <span className='cardItems-quantity'>{cartItems[e.id]}</span>
+                                    <span className='w-8 h-8 border border-[#ebebeb] bg-white flex items-center justify-center'>{cartItems[e.id]}</span>
                                     <button
-                                        className="quantity-btn"
+                                        className="w-8 h-8 bg-[#f0f0f0] border border-[#ebebeb] cursor-pointer hover:bg-[#e0e0e0] flex items-center justify-center"
                                         onClick={() => addToCart(e.id)}
                                     >
                                         +
@@ -115,83 +114,84 @@ export const CartItems = () => {
                                 <p>${e.new_price * cartItems[e.id]}</p>
                                 <img
                                     src={remove_icon}
-                                    onClick={() => {removeFromCart(e.id)}}
+                                    onClick={() => { removeFromCart(e.id) }}
                                     alt="Remove"
-                                    className="remove-icon"
+                                    className="w-4 cursor-pointer mx-auto md:mx-0 hover:opacity-70"
                                 />
                             </div>
                         </div>
                     ))}
 
                     {/* Promo Code Section */}
-                    <div className="promo-code-section">
-                        <h3>Promo Code</h3>
-                        <div className="promo-input-container">
-                            <input
-                                type="text"
-                                placeholder="Enter promo code"
-                                value={promoCode}
-                                onChange={(e) => setPromoCode(e.target.value)}
-                                className="promo-input"
-                                disabled={appliedPromo}
-                            />
-                            {!appliedPromo ? (
-                                <button
-                                    className="apply-promo-btn"
-                                    onClick={applyPromoCode}
-                                    disabled={!promoCode.trim()}
-                                >
-                                    Apply
-                                </button>
-                            ) : (
-                                <button
-                                    className="remove-promo-btn"
-                                    onClick={removePromoCode}
-                                >
-                                    Remove
-                                </button>
+                    <div className="flex flex-col md:flex-row my-24 gap-20">
+                        <div className="flex-1">
+                            <h3 className="text-[#555] text-xl font-semibold mb-5">Promo Code</h3>
+                            <div className="flex h-14 bg-[#eaeaea] pl-5">
+                                <input
+                                    type="text"
+                                    placeholder="Enter promo code"
+                                    value={promoCode}
+                                    onChange={(e) => setPromoCode(e.target.value)}
+                                    className="border-none outline-none bg-transparent text-base w-full h-full"
+                                    disabled={appliedPromo}
+                                />
+                                {!appliedPromo ? (
+                                    <button
+                                        className="w-40 h-full text-base bg-black text-white cursor-pointer disabled:bg-gray-400"
+                                        onClick={applyPromoCode}
+                                        disabled={!promoCode.trim()}
+                                    >
+                                        Apply
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="w-40 h-full text-base bg-red-500 text-white cursor-pointer"
+                                        onClick={removePromoCode}
+                                    >
+                                        Remove
+                                    </button>
+                                )}
+                            </div>
+                            {promoError && <p className="text-red-500 mt-2 text-sm">{promoError}</p>}
+                            {appliedPromo && (
+                                <div className="mt-2 text-green-600 text-sm font-medium">
+                                    <p>✓ {appliedPromo.description}</p>
+                                </div>
                             )}
                         </div>
-                        {promoError && <p className="promo-error">{promoError}</p>}
-                        {appliedPromo && (
-                            <div className="applied-promo">
-                                <p className="promo-success">✓ {appliedPromo.description}</p>
-                            </div>
-                        )}
-                    </div>
 
-                    <div className="cart-total">
-                        <div className="total-info">
-                            <div className="total-breakdown">
-                                <div className="total-line">
+                        <div className="flex-1 flex flex-col gap-10">
+                            <h1 className="text-2xl font-bold">Cart Totals</h1>
+                            <div>
+                                <div className="flex justify-between py-4 border-b border-[#e2e2e2]">
                                     <span>Subtotal:</span>
                                     <span>${totalAmount.toFixed(2)}</span>
                                 </div>
                                 {appliedPromo && (
-                                    <div className="total-line discount-line">
+                                    <div className="flex justify-between py-4 border-b border-[#e2e2e2] text-green-600">
                                         <span>Discount ({appliedPromo.type === 'percentage' ? appliedPromo.value + '%' : '$' + appliedPromo.value}):</span>
                                         <span>-${discount.toFixed(2)}</span>
                                     </div>
                                 )}
-                                <div className="total-line final-total">
+                                <div className="flex justify-between py-4 text-xl font-bold">
                                     <span>Total:</span>
                                     <span>${finalTotal.toFixed(2)}</span>
                                 </div>
                             </div>
-                            <p>Total Items: {totalItems}</p>
+                            <p className="text-sm text-gray-500">Total Items: {totalItems}</p>
+                            <button
+                                className="w-full md:w-64 h-14 bg-[#ff4141] text-white text-base font-semibold cursor-pointer hover:bg-[#e63b3b] transition-colors outline-none border-none"
+                                onClick={() => {
+                                    if (!isLoggedIn) {
+                                        navigate('/login');
+                                    } else {
+                                        navigate('/checkout');
+                                    }
+                                }}
+                            >
+                                {isLoggedIn ? 'Proceed to Checkout' : 'Login to Checkout'}
+                            </button>
                         </div>
-                        <button 
-                            className="checkout-btn"
-                            onClick={() => {
-                                if (!isLoggedIn) {
-                                    navigate('/login');
-                                } else {
-                                    navigate('/checkout');
-                                }
-                            }}
-                        >
-                            {isLoggedIn ? 'Proceed to Checkout' : 'Login to Checkout'}
-                        </button>
                     </div>
                 </>
             )}

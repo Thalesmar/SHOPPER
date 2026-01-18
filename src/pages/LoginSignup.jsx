@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ShopContext } from '../Context/ShopContextInstance'
 import { Notification } from '../Component/Notification/Notification'
-import "./CSS/LoginSign.css";
 
 export const LoginSignup = () => {
   const { login } = useContext(ShopContext);
@@ -65,7 +64,7 @@ export const LoginSignup = () => {
   // Simple hash function for password hashing (in production, use bcrypt)
   const hashPassword = (password) => {
     if (!password || password.length === 0) return '0';
-    
+
     let hash = 0;
     for (let i = 0; i < password.length; i++) {
       const char = password.charCodeAt(i);
@@ -92,19 +91,19 @@ export const LoginSignup = () => {
         // Login logic
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         const hashedPassword = hashPassword(formData.password);
-        
-        
+
+
         // Try to find user with hashed password first
         let user = users.find(u => u.email === formData.email && u.password === hashedPassword);
-        
+
         // If not found, try with plain text password (for backward compatibility)
         if (!user) {
           user = users.find(u => u.email === formData.email && u.password === formData.password);
-           // If found with plain text, update to hashed password
-           if (user) {
-             user.password = hashedPassword;
-             localStorage.setItem('users', JSON.stringify(users));
-           }
+          // If found with plain text, update to hashed password
+          if (user) {
+            user.password = hashedPassword;
+            localStorage.setItem('users', JSON.stringify(users));
+          }
         }
 
         if (user) {
@@ -127,8 +126,8 @@ export const LoginSignup = () => {
         }
 
         const hashedPassword = hashPassword(formData.password);
-        
-        
+
+
         const newUser = {
           id: Date.now(),
           name: formData.name,
@@ -139,7 +138,7 @@ export const LoginSignup = () => {
 
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
-        
+
         // Remove password from user object before storing in context
         const { password, ...userWithoutPassword } = newUser;
         login(userWithoutPassword);
@@ -166,85 +165,84 @@ export const LoginSignup = () => {
   };
 
   return (
-    <div className='loginSignup'>
-        <div className="loginSignup-container">
-            <h1>{isLogin ? 'Log In' : 'Sign Up'}</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="loginSignup-fields">
-                    {!isLogin && (
-                        <div>
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder='Your Name'
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                className={errors.name ? 'error' : ''}
-                            />
-                            {errors.name && <span className="error-message">{errors.name}</span>}
-                        </div>
-                    )}
-                    <div>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder='Email Address'
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            className={errors.email ? 'error' : ''}
-                        />
-                        {errors.email && <span className="error-message">{errors.email}</span>}
-                    </div>
-                    <div>
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder='Password'
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            className={errors.password ? 'error' : ''}
-                        />
-                        {errors.password && <span className="error-message">{errors.password}</span>}
-                    </div>
-                    {!isLogin && (
-                        <div>
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                placeholder='Confirm Password'
-                                value={formData.confirmPassword}
-                                onChange={handleInputChange}
-                                className={errors.confirmPassword ? 'error' : ''}
-                            />
-                            {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
-                        </div>
-                    )}
-                </div>
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? 'Processing...' : (isLogin ? 'Log In' : 'Continue')}
-                </button>
-            </form>
-            <hr className='divider' />
-            <p className='loginSignup-login'>
-                {isLogin ? "Don't have an account? " : "Already have an account? "}
-                <span onClick={toggleMode} style={{cursor: 'pointer', color: '#007bff'}}>
-                    {isLogin ? 'Sign Up' : 'Log In'}
-                </span>
-            </p>
-            
+    <div className='w-full h-auto py-24 bg-[#fce3fe]'>
+      <div className="w-[90%] max-w-[580px] h-auto bg-white m-auto py-10 px-8 md:px-14 rounded-3xl shadow-lg">
+        <h1 className="text-3xl font-bold text-[#2c2c2c] mb-6">{isLogin ? 'Log In' : 'Sign Up'}</h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-7 mt-8">
+          <div className="flex flex-col gap-5">
             {!isLogin && (
-                <div className='loginSignup-agree'>
-                    <input type="checkbox" name='agree' id='agree' required />
-                    <p>I agree to the <span>Terms of Service</span> and <span>Privacy Policy</span></p>
-                </div>
+              <div>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder='Your Name'
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className={`h-16 w-full pl-5 border border-[#c9c9c9] outline-none text-[#5c5c5c] text-lg rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-colors ${errors.name ? 'border-red-500' : ''}`}
+                />
+                {errors.name && <span className="text-red-500 text-sm mt-1 block">{errors.name}</span>}
+              </div>
             )}
-        </div>
-        <hr />
-        <Notification
-            message={notification.message}
-            type={notification.type}
-            onClose={() => setNotification({ message: '', type: 'info' })}
-        />
+            <div>
+              <input
+                type="email"
+                name="email"
+                placeholder='Email Address'
+                value={formData.email}
+                onChange={handleInputChange}
+                className={`h-16 w-full pl-5 border border-[#c9c9c9] outline-none text-[#5c5c5c] text-lg rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-colors ${errors.email ? 'border-red-500' : ''}`}
+              />
+              {errors.email && <span className="text-red-500 text-sm mt-1 block">{errors.email}</span>}
+            </div>
+            <div>
+              <input
+                type="password"
+                name="password"
+                placeholder='Password'
+                value={formData.password}
+                onChange={handleInputChange}
+                className={`h-16 w-full pl-5 border border-[#c9c9c9] outline-none text-[#5c5c5c] text-lg rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-colors ${errors.password ? 'border-red-500' : ''}`}
+              />
+              {errors.password && <span className="text-red-500 text-sm mt-1 block">{errors.password}</span>}
+            </div>
+            {!isLogin && (
+              <div>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder='Confirm Password'
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className={`h-16 w-full pl-5 border border-[#c9c9c9] outline-none text-[#5c5c5c] text-lg rounded-lg focus:border-primary focus:ring-1 focus:ring-primary transition-colors ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                />
+                {errors.confirmPassword && <span className="text-red-500 text-sm mt-1 block">{errors.confirmPassword}</span>}
+              </div>
+            )}
+          </div>
+          <button type="submit" disabled={isLoading} className="w-full h-16 text-white bg-[#ff4141] mt-4 border-none text-xl font-medium cursor-pointer rounded-lg hover:bg-[#e63b3b] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+            {isLoading ? 'Processing...' : (isLogin ? 'Log In' : 'Continue')}
+          </button>
+        </form>
+
+        <p className='mt-5 text-[#5c5c5c] text-base font-medium'>
+          {isLogin ? "Don't have an account? " : "Already have an account? "}
+          <span onClick={toggleMode} className="text-[#ff4141] font-semibold cursor-pointer hover:underline">
+            {isLogin ? 'Sign Up' : 'Log In'}
+          </span>
+        </p>
+
+        {!isLogin && (
+          <div className='flex items-center mt-6 gap-4 text-[#5c5c5c] text-sm font-medium'>
+            <input type="checkbox" name='agree' id='agree' required className="w-4 h-4 accent-[#ff4141]" />
+            <p>I agree to the <span className="text-[#ff4141] cursor-pointer hover:underline">Terms of Service</span> and <span className="text-[#ff4141] cursor-pointer hover:underline">Privacy Policy</span></p>
+          </div>
+        )}
+      </div>
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        onClose={() => setNotification({ message: '', type: 'info' })}
+      />
     </div>
   )
 }

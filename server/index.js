@@ -18,6 +18,7 @@ import authRoutes from './routes/auth.js';
 import cartRoutes from './routes/cart.js';
 import orderRoutes from './routes/orders.js';
 import productRoutes from './routes/products.js';
+import { errorHandler, AppError } from './utils/errorHandler.js';
 
 // Load environment variables
 dotenv.config();
@@ -54,10 +55,10 @@ const connectDB = async () => {
       socketTimeoutMS: 45000,
     });
     console.log('✅ Connected to MongoDB successfully');
-    console.log(`🗄️ Database: ${conn.connection.name}`);
+    console.log(`🗄️  Database: ${conn.connection.name}`);
   } catch (error) {
     console.error('❌ MongoDB connection error:', error.message);
-    console.log('⚠️ Running without database - some features may not work');
+    console.log('⚠️  Running without database - some features may not work');
     // Don't exit process, allow server to run without DB for development
   }
 };
@@ -80,28 +81,19 @@ app.use('/api/products', productRoutes);
 
 
 // Catch-all 404 handler for undefined routes
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found'
-  });
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 // Global error handler
-app.use((err, req, res) => {
-  console.error('Error:', err);
-  res.status(500).json({
-    success: false,
-    message: 'Internal server error'
-  });
-});
+app.use(errorHandler);
 
 // Start the server
 app.listen(PORT, () => {
   console.log(`🚀 SHOPPER Backend Server running on port ${PORT}`);
   console.log(`📱 API Root: http://localhost:${PORT}/api`);
-  console.log(`🛍️ Products: http://localhost:${PORT}/api/products`);
-  console.log(`🗄️ MongoDB: ${MONGODB_URI}`);
+  console.log(`🛍️  Products: http://localhost:${PORT}/api/products`);
+  console.log(`🗄️  MongoDB: ${MONGODB_URI}`);
 });
 
 export default app;

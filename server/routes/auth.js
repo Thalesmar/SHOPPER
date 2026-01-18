@@ -5,69 +5,77 @@
  */
 
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { body, validationResult } from 'express-validator';
 import User from '../models/User.js';
+import { AppError } from '../utils/errorHandler.js';
 
 const router = express.Router();
+
+// Validation middleware
+const registerValidation = [
+  body('email').trim().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+  body('name').trim().notEmpty().withMessage('Name is required')
+];
+
+const loginValidation = [
+  body('email').trim().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+  body('password').notEmpty().withMessage('Password is required')
+];
 
 /**
  * POST /api/auth/register
  * Register a new user
  */
-router.post('/register', async (req, res) => {
+router.post('/register', registerValidation, async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
-    
-    // Validate required fields
-    if (!username || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Username, email, and password are required'
-      });
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(new AppError(errors.array()[0].msg, 400));
     }
-    
+
+    const { email, password, name } = req.body;
+
     // Check if user already exists
-    const existingUser = await User.findOne({
-      $or: [{ email }, { username }]
-    });
-    
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: 'User with this email or username already exists'
-      });
+      return next(new AppError('Email already registered', 400));
     }
-    
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Create new user
-    const user = new User({
-      username,
+    const newUser = new User({
       email,
-      password
+      password: hashedPassword,
+      name
     });
-    
-    await user.save();
-    
+
+    await newUser.save();
+
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: newUser._id, email: newUser.email },
       process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '7d' }
+      { expiresIn: '24h' }
     );
-    
+
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
-      data: {
-        user: user.toJSON(),
-        token
+      token,
+      user: {
+        id: newUser._id,
+        email: newUser.email,
+        name: newUser.name
       }
     });
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Registration failed'
-    });
+    next(error);
   }
 });
 
@@ -75,65 +83,55 @@ router.post('/register', async (req, res) => {
  * POST /api/auth/login
  * Login user
  */
-router.post('/login', async (req, res) => {
+router.post('/login', loginValidation, async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    
-    // Validate required fields
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email and password are required'
-      });
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(new AppError(errors.array()[0].msg, 400));
     }
-    
-    // Find user by email
+
+    const { email, password } = req.body;
+
+    // Find user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid email or password'
-      });
+      return next(new AppError('Invalid email or password', 401));
     }
-    
+
     // Check password
-    const isPasswordValid = await user.comparePassword(password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid email or password'
-      });
+      return next(new AppError('Invalid email or password', 401));
     }
-    
+
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user._id, email: user.email },
       process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '7d' }
+      { expiresIn: '24h' }
     );
-    
+
     res.json({
       success: true,
       message: 'Login successful',
-      data: {
-        user: user.toJSON(),
-        token
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Login failed'
-    });
+    next(error);
   }
 });
 
 /**
  * GET /api/auth/users
- * Get all users (for testing)
+ * Get all users (for development/admin purposes)
  */
-router.get('/users', async (req, res) => {
+router.get('/users', async (req, res, next) => {
   try {
     const users = await User.find().select('-password');
     res.json({
@@ -142,11 +140,7 @@ router.get('/users', async (req, res) => {
       count: users.length
     });
   } catch (error) {
-    console.error('Get users error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to get users'
-    });
+    next(error);
   }
 });
 

@@ -2,14 +2,13 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShopContext } from '../Context/ShopContextInstance';
 import { Notification } from '../Component/Notification/Notification';
-import './CSS/Checkout.css';
 
 export const Checkout = () => {
   const { user, isLoggedIn, cartItems, all_product, clearCart, getTotalCartAmount } = useContext(ShopContext);
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [notification, setNotification] = useState({ message: '', type: 'info' });
-  
+
   const [shippingInfo, setShippingInfo] = useState({
     firstName: '',
     lastName: '',
@@ -43,7 +42,7 @@ export const Checkout = () => {
     } else if (section === 'payment') {
       setPaymentInfo(prev => ({ ...prev, [name]: value }));
     }
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -168,7 +167,7 @@ export const Checkout = () => {
     <div className="checkout">
       <div className="checkout-container">
         <h1>Checkout</h1>
-        
+
         <form onSubmit={handleSubmit} className="checkout-form">
           <div className="checkout-sections">
             {/* Shipping Information */}
@@ -200,7 +199,7 @@ export const Checkout = () => {
                   {errors.lastName && <span className="error-message">{errors.lastName}</span>}
                 </div>
               </div>
-              
+
               <div className="form-row">
                 <div className="form-group">
                   <label>Email *</label>
@@ -370,7 +369,7 @@ export const Checkout = () => {
                 </div>
               ))}
             </div>
-            
+
             <div className="order-total">
               <div className="total-line">
                 <span>Subtotal:</span>
@@ -386,8 +385,8 @@ export const Checkout = () => {
               </div>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="place-order-btn"
               disabled={isProcessing}
             >

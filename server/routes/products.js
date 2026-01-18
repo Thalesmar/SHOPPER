@@ -38,88 +38,50 @@ const router = express.Router();
  *     }
  *   });
  */
-router.get('/', getAllProducts);
+import { query, validationResult } from 'express-validator';
+
+const validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+  next();
+};
+
+/**
+ * GET /api/products
+ * Get all products with optional filtering and pagination
+ */
+router.get('/', [
+  query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer'),
+  query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
+  validate
+], getAllProducts);
 
 /**
  * GET /api/products/categories
  * Get all available product categories
- * 
- * Frontend integration:
- * fetch('/api/products/categories')
- *   .then(response => response.json())
- *   .then(data => {
- *     if (data.success) {
- *       console.log('Categories:', data.data);
- *     }
- *   });
  */
 router.get('/categories', getCategories);
 
 /**
  * GET /api/products/search
  * Search products by name or description
- * 
- * Query parameters:
- * - q: Search term (required)
- * - page: Page number (default: 1)
- * - limit: Items per page (default: 36)
- * 
- * Example: GET /api/products/search?q=blouse&page=1&limit=10
- * 
- * Frontend integration:
- * fetch('/api/products/search?q=blouse')
- *   .then(response => response.json())
- *   .then(data => {
- *     if (data.success) {
- *       console.log('Search results:', data.data.products);
- *     }
- *   });
  */
-router.get('/search', searchProducts);
+router.get('/search', [
+  query('q').trim().notEmpty().withMessage('Search query is required'),
+  validate
+], searchProducts);
 
 /**
  * GET /api/products/category/:category
  * Get products by specific category
- * 
- * URL parameters:
- * - category: Category name (women, men, kid)
- * 
- * Query parameters:
- * - page: Page number (default: 1)
- * - limit: Items per page (default: 36)
- * 
- * Example: GET /api/products/category/women?page=1&limit=12
- * 
- * Frontend integration:
- * fetch('/api/products/category/women')
- *   .then(response => response.json())
- *   .then(data => {
- *     if (data.success) {
- *       console.log('Women products:', data.data.products);
- *     }
- *   });
  */
 router.get('/category/:category', getProductsByCategoryRoute);
 
 /**
  * GET /api/products/:id
  * Get a single product by ID
- * 
- * URL parameters:
- * - id: Product ID (number)
- * 
- * Example: GET /api/products/1
- * 
- * Frontend integration:
- * fetch('/api/products/1')
- *   .then(response => response.json())
- *   .then(data => {
- *     if (data.success) {
- *       console.log('Product details:', data.data);
- *     } else {
- *       console.error('Product not found');
- *     }
- *   });
  */
 router.get('/:id', getProductById);
 

@@ -46,6 +46,11 @@ const productSchema = new mongoose.Schema({
   timestamps: true // Adds createdAt and updatedAt fields
 });
 
+// Add indexes for better query performance
+productSchema.index({ name: 'text', category: 1 });
+productSchema.index({ category: 1 });
+productSchema.index({ new_price: 1 });
+
 // Create and export the Product model
 const Product = mongoose.model('Product', productSchema);
 
